@@ -18,7 +18,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Controller
+//@Controller
 @RequestMapping("/upload")
 public class ApiImage {
 
@@ -29,20 +29,20 @@ public class ApiImage {
     private ModelMapper modelMapper;
 
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public DataDto editSave(@RequestPart(value = "datanya", required = true) DataDto dataDto,
-                             @RequestPart(value = "file", required = true) MultipartFile file) throws Exception {
-
-        Datanya datanya = modelMapper.map(dataDto, Datanya.class);
-        String userFolderPath = "D:/img/";
-        Path path = Paths.get(userFolderPath);
-        Path filePath = path.resolve(file.getOriginalFilename());
-        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-        datanya.setFile(file.getOriginalFilename());
-        datanya = dataRepository.save(datanya);
-        DataDto datanyaDtoDB = mapDataToDataDto(datanya);
-        return datanyaDtoDB;
-    }
+//    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public DataDto editSave(@RequestPart(value = "datanya", required = true) DataDto dataDto,
+//                             @RequestPart(value = "file", required = true) MultipartFile file) throws Exception {
+//
+//        Datanya datanya = modelMapper.map(dataDto, Datanya.class);
+//        String userFolderPath = "D:/img/";
+//        Path path = Paths.get(userFolderPath);
+//        Path filePath = path.resolve(file.getOriginalFilename());
+//        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+//        datanya.setFile(file.getOriginalFilename());
+//        datanya = dataRepository.save(datanya);
+//        DataDto datanyaDtoDB = mapDataToDataDto(datanya);
+//        return datanyaDtoDB;
+//    }
 
     private DataDto mapDataToDataDto(Datanya data) {
         DataDto dataDto = modelMapper.map(data, DataDto.class);

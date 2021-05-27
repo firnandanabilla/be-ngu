@@ -5,20 +5,18 @@ import com.ngu.demo.model.entity.Datanya;
 import com.ngu.demo.repository.DataRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/data")
+@CrossOrigin(origins = "http://localhost:3000")
 public class ApiData {
 
     @Autowired
@@ -30,8 +28,6 @@ public class ApiData {
     public ApiData(DataRepository dataRepository) {
         this.dataRepository = dataRepository;
     }
-
-    @CrossOrigin(origins = "http://localhost:3000")
 
     @GetMapping()
     public List<DataDto> getListData() {
@@ -57,7 +53,8 @@ public class ApiData {
         byte[] foto = Files.readAllBytes(paths);
         return foto;
     }
-//
+
+    //
 //    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 //    public DataDto editSave(@RequestPart(value = "datanya", required = true) DataDto dataDto,
 //                             @RequestPart(value = "file", required = true) MultipartFile file) throws Exception {
@@ -75,6 +72,23 @@ public class ApiData {
 //        DataDto datanyaDtoDB = mapDataToDataDto(datanya);
 //        return datanyaDtoDB;
 //    }
+    @PostMapping()
+    public DataDto saveData(@RequestBody DataDto dataDto) throws Exception {
+        Datanya datanya = modelMapper.map(dataDto, Datanya.class);
+//        String userFolderPath = "C:/Users/Lenovo/IMAGE/";
+//        Path path = Paths.get(userFolderPath);
+//        Path filePath = path.resolve(file.getOriginalFilename());
+//        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+//        input.setFile(file.getOriginalFilename());
+        datanya = dataRepository.save(datanya);
+        DataDto dataDto1 = mapDataToDataDto(datanya);
+        return dataDto1;
+    }
+
+    @DeleteMapping
+    public void del(){
+        dataRepository.deleteAll();
+    }
 
 }
 
