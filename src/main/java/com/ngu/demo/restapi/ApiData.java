@@ -5,11 +5,15 @@ import com.ngu.demo.model.entity.Datanya;
 import com.ngu.demo.repository.DataRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,22 +29,18 @@ public class ApiData {
     @Autowired
     private ModelMapper modelMapper;
 
-    public ApiData(DataRepository dataRepository) {
-        this.dataRepository = dataRepository;
-    }
-
     @GetMapping()
     public List<DataDto> getListData() {
         List<Datanya> dataList = dataRepository.findAll();
-        List<DataDto> dataDtos =
+        List<DataDto> dataDtoList =
                 dataList.stream()
                         .map(data -> mapDataToDataDto(data))
                         .collect(Collectors.toList());
-        return dataDtos;
+        return dataDtoList;
     }
 
-    private DataDto mapDataToDataDto(Datanya data) {
-        DataDto dataDto = modelMapper.map(data, DataDto.class);
+    private DataDto mapDataToDataDto(Datanya datanya) {
+        DataDto dataDto = modelMapper.map(datanya, DataDto.class);
         return dataDto;
     }
 
