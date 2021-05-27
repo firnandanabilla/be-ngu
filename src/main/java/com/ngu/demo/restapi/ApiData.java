@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.print.attribute.standard.Media;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,7 +21,6 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/data")
-@CrossOrigin(origins = "http://localhost:3000")
 public class ApiData {
 
     @Autowired
@@ -72,14 +72,14 @@ public class ApiData {
 //        DataDto datanyaDtoDB = mapDataToDataDto(datanya);
 //        return datanyaDtoDB;
 //    }
-    @PostMapping()
-    public DataDto saveData(@RequestBody DataDto dataDto) throws Exception {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, value = "/save")
+    public DataDto saveData(@RequestPart(value = "data", required = true) DataDto dataDto, @RequestPart(value = "file", required = true) MultipartFile file) throws Exception {
         Datanya datanya = modelMapper.map(dataDto, Datanya.class);
-//        String userFolderPath = "C:/Users/Lenovo/IMAGE/";
-//        Path path = Paths.get(userFolderPath);
-//        Path filePath = path.resolve(file.getOriginalFilename());
-//        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-//        input.setFile(file.getOriginalFilename());
+        String userFolderPath = "D:/img/";
+        Path path = Paths.get(userFolderPath);
+        Path filePath = path.resolve(file.getOriginalFilename());
+        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+        datanya.setFile(file.getOriginalFilename());
         datanya = dataRepository.save(datanya);
         DataDto dataDto1 = mapDataToDataDto(datanya);
         return dataDto1;
