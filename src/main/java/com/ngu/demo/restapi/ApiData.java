@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.Paths;
+import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,11 +24,14 @@ import java.util.stream.Collectors;
 @RequestMapping("/data")
 public class ApiData {
 
-    @Autowired
-    private DataRepository dataRepository;
+    private final DataRepository dataRepository;
 
-    @Autowired
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
+
+    public ApiData(DataRepository dataRepository, ModelMapper modelMapper) {
+        this.dataRepository = dataRepository;
+        this.modelMapper = modelMapper;
+    }
 
     @GetMapping()
     public List<DataDto> getListData() {
@@ -45,13 +49,14 @@ public class ApiData {
     }
 
     @GetMapping("/getFoto/{id}")
-    public byte[] getFoto(@PathVariable Integer id) throws IOException {
+    public String getFoto(@PathVariable Integer id) throws IOException {
         Datanya datanya = dataRepository.findById(id).get();
         String userFolderPath = "D:/img/";
         String pathFile = userFolderPath + datanya.getFile();
         Path paths = Paths.get(pathFile);
-        byte[] foto = Files.readAllBytes(paths);
-        return foto;
+        byte[] photo = Files.readAllBytes(paths);
+        String encodedString = Base64.getEncoder().encodeToString(photo);
+        return encodedString;
     }
 
     //
