@@ -90,6 +90,15 @@ public class ApiData {
         return dataDto1;
     }
 
+    @GetMapping("/{id}")
+    public DataDto getData(@PathVariable Integer id) {
+        Datanya data = dataRepository.findById(id).get();
+        DataDto dataDto = new DataDto();
+        modelMapper.map(data, dataDto);
+        dataDto.setId(data.getId());
+        return dataDto;
+    }
+
     @DeleteMapping
     public void del(){
         dataRepository.deleteAll();
