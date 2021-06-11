@@ -101,6 +101,9 @@ public class ApiData {
         return dataDto1;
     }
 
+
+
+
     @GetMapping("/{id}")
     public DataDto getData(@PathVariable Integer id) {
         Datanya data = dataRepository.findById(id).get();
