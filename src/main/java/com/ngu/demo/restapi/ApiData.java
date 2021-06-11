@@ -20,7 +20,9 @@ import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 @RestController
+@CrossOrigin("localhost:3001")
 @RequestMapping("/data")
 public class ApiData {
 
@@ -77,14 +79,23 @@ public class ApiData {
 //        DataDto datanyaDtoDB = mapDataToDataDto(datanya);
 //        return datanyaDtoDB;
 //    }
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, value = "/save")
-    public DataDto saveData(@RequestPart(value = "data", required = true) DataDto dataDto, @RequestPart(value = "file", required = true) MultipartFile file) throws Exception {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, value = "/saveFile")
+    public DataDto saveData(@RequestPart(value = "data", required = true) DataDto dataDto,
+                            @RequestPart(value = "file", required = true) MultipartFile file) throws Exception {
         Datanya datanya = modelMapper.map(dataDto, Datanya.class);
         String userFolderPath = "D:/img/";
         Path path = Paths.get(userFolderPath);
         Path filePath = path.resolve(file.getOriginalFilename());
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
         datanya.setFile(file.getOriginalFilename());
+        datanya = dataRepository.save(datanya);
+        DataDto dataDto1 = mapDataToDataDto(datanya);
+        return dataDto1;
+    }
+
+    @PostMapping("/save")
+    public DataDto saveData(@RequestBody DataDto dataDto) {
+        Datanya datanya = modelMapper.map(dataDto, Datanya.class);
         datanya = dataRepository.save(datanya);
         DataDto dataDto1 = mapDataToDataDto(datanya);
         return dataDto1;
